@@ -18,7 +18,7 @@ setup(
     long_description = "aios part uploader",
     license = "MIT Licence",
 
-    url = "",     #项目相关文件地址，一般是github
+    url = "https://github.com/wangxiao1427/python_helper/tree/master/aios_part_uploader",     #项目相关文件地址，一般是github
     author = "shawn",
     author_email = "wang.xiao@intellif.com",
 
