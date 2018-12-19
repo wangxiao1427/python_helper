@@ -2,6 +2,7 @@ import os
 import random
 import string
 import requests
+from io import BytesIO
 
 
 class Uploader(object):
