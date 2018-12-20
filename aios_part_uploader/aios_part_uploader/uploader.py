@@ -64,3 +64,4 @@ class Uploader(object):
         _res = requests.put(self._merge_url, data=json.dumps(self._data))
         if not _res.ok:
             raise Exception('Encountered an error in merge all slices')
+        return _res.text
