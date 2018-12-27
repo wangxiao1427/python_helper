@@ -35,12 +35,13 @@ class Uploader(object):
 
         if not self._upload_url:
             raise Exception('upload_url is required!')
-        if not os.path.basename(self._file_name):
+        if not os.path.basename(file_name):
             raise Exception('upload_url is invalid format!')
         if not self._merge_url:
             raise Exception('merge_url is required!')
 
         self._file_name = file_name
+        self._sub_dir = sub_dir
 
     def start(self):
         self._reset_task_id()
@@ -66,20 +67,20 @@ class Uploader(object):
 
                 _upload_data['chunk'] = _chunk
 
-                _files = {'file': (file_name, BytesIO(part_bytes), 'application')}
+                _file_name = os.path.basename(self._file_name)
+
+                _files = {'file': (_file_name, BytesIO(part_bytes), 'application')}
                 _res = requests.post(self._upload_url, files=_files, data=_upload_data)
                 
-                if not _res.ok:
+                if not _res.ok and _res.status_code == 200:
                     raise FileTransError('File transfer failed (1)! {}'.format(_res.text))
                 _chunk += 1
 
-                _size += len(part_bytes)
-    
     # merge
     def _part_merge(self):
         _file_name = os.path.basename(self._file_name)
         _merge_data = {'sub_dir': self._sub_dir, 'task_id': self.task_id, 'filename': _file_name}
-        _res = requests.put(self._merge_url, data=data)
+        _res = requests.put(self._merge_url, data=_merge_data)
         if not _res.ok:
             raise FileTransError('File transfer failed (2)! {}'.format(_res.text))
         return _res
