@@ -7,10 +7,16 @@ from io import BytesIO
 
 
 class Uploader(object):
-    r"""文件存储服务NFS上传接口
+    r"""文件存储服务NFS上传接口  
+    params:sub_dir 文件在文件系统存放的目录  
     params:file_name 物理文件路径  
-    params:data 合并文件接口附带的参数,数据集相关参数  
-    params:args 上传接口upload_url & 合并接口merge_url 
+    params:args 上传接口 upload_url & 合并接口 merge_url 
+    
+    文件分片上传阶段异常  
+    FileTransError : File transfer failed (1)!  
+
+    分片合并阶段异常  
+    FileTransError : File transfer failed (2)!  
     """
 
     def __init__(self, sub_dir, file_name, **args):
@@ -76,4 +82,4 @@ class Uploader(object):
         _res = requests.put(self._merge_url, data=data)
         if not _res.ok:
             raise FileTransError('File transfer failed (2)!')
-        return _res.text
+        return _res

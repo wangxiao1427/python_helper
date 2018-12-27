@@ -35,8 +35,7 @@ class Uploader(object):
     def start(self):
         self._reset_task_id()
         self._push_part_file()
-        self._part_merge()
-        return True
+        return self._part_merge()
 
     def _reset_task_id(self):
         self.task_id = 'wu_{}'.format(
