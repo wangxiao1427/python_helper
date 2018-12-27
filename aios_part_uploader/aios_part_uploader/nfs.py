@@ -70,7 +70,7 @@ class Uploader(object):
                 _res = requests.post(self._upload_url, files=_files, data=_upload_data)
                 
                 if not _res.ok:
-                    raise FileTransError('File transfer failed (1)!')
+                    raise FileTransError('File transfer failed (1)! {}'.format(_res.text))
                 _chunk += 1
 
                 _size += len(part_bytes)
@@ -81,5 +81,5 @@ class Uploader(object):
         _merge_data = {'sub_dir': self._sub_dir, 'task_id': self.task_id, 'filename': _file_name}
         _res = requests.put(self._merge_url, data=data)
         if not _res.ok:
-            raise FileTransError('File transfer failed (2)!')
+            raise FileTransError('File transfer failed (2)! {}'.format(_res.text))
         return _res

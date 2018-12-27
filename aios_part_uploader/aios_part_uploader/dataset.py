@@ -55,12 +55,12 @@ class Uploader(object):
                 _data['chunk'] = _chunk
                 res1 = requests.post(self._upload_url, files=files, data=_data)
                 if not res1.ok:
-                    raise Exception('Encountered an error in pushing a slice')
+                    raise Exception('Encountered an error in pushing a slice, {}'.format(res1.text))
                 _chunk += 1
     # merge
     def _part_merge(self):
         self._data['task_id'] = self.task_id
         _res = requests.put(self._merge_url, data=json.dumps(self._data))
         if not _res.ok:
-            raise Exception('Encountered an error in merge all slices')
+            raise Exception('Encountered an error in merge all slices, {}'.format(_res.text))
         return _res.text
