@@ -5,26 +5,38 @@ import string
 import requests
 from io import BytesIO
 
+class NFSResponse(object):
+    ok = False
+    text = None
+
+    def __init__(self, ok, text):
+        self.ok = ok
+        self.text = text
 
 class Uploader(object):
     r"""文件存储服务NFS上传接口  
     params:sub_dir 文件在文件系统存放的目录  
+    例如: 挂载点是/mnt/, sub_dir是/dev/dmp/1/..., file_name是c:\\test.txt
+        最终会存放到的地址: 
+            /mnt/dev/dmp/1/.../test.txt
+        格式为<挂载点>/<中间路径>/<文件名>
+        中间路径格式：
+            <env>/<自定义>
+        env是环境标记:
+            prod:生产环境
+            test:测试环境
+            dev:开发环境
     params:file_name 物理文件路径  
     params:args 上传接口 upload_url & 合并接口 merge_url 
     
     文件分片上传阶段异常  
-    FileTransError : File transfer failed (1)!  
+    FileTransError : File transfer failed (1)! xxx  
 
     分片合并阶段异常  
-    FileTransError : File transfer failed (2)!  
+    FileTransError : File transfer failed (2)! yyy  
     """
 
     def __init__(self, sub_dir, file_name, **args):
-        r"""
-        params:sub_dir 文件在文件系统存放的目录  
-        params:file_name 物理文件路径  
-        params:args 上传接口 upload_url & 合并接口 merge_url 
-        """
         if not sub_dir:
             raise Exception('sub_dir is missing or invalidate!')
         if not os.path.exists(file_name):
@@ -44,9 +56,12 @@ class Uploader(object):
         self._sub_dir = sub_dir
 
     def start(self):
-        self._reset_task_id()
-        self._push_part_file()
-        return self._part_merge()
+        try:
+            self._reset_task_id()
+            self._push_part_file()
+            return self._part_merge()
+        except Exception as err:
+            return NFSResponse(False, str(err))
 
     def _reset_task_id(self):
         self.task_id = 'wu_{}'.format(
