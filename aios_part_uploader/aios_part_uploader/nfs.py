@@ -4,7 +4,7 @@ import random
 import string
 import requests
 from io import BytesIO
-from exceptions import FileTransError
+from aios_part_uploader.exceptions import FileTransError
 
 class NFSResponse(object):
     ok = False
