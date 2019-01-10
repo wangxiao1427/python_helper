@@ -7,7 +7,7 @@
 * 引入  
   - 数据集分片上传:  
     ```
-    from aios_part_uploader.dateset import Uploader  
+    from aios_part_uploader.dp import Uploader  
 
     file_name = 'c:\\test.txt'
     # 和数据集相关的业务数据
@@ -25,7 +25,7 @@
 
   - 文件分片上传到指定文件挂载点:  
     ```
-    from aios_part_uploader.nfs import Uploader
+    from aios_part_uploader.cs import Uploader
 
     # sub_dir格式 <环境:prod/test/dev>/<模块>/<自定义>
     sub_dir = 'dev/dmp/1/xxx'
