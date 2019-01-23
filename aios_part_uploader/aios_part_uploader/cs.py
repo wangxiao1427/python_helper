@@ -78,7 +78,7 @@ class Uploader(object):
     # slice
     def _push_part_file(self):
 
-        _chunk = 0
+        _chunk = 1
         _file_name = os.path.basename(self._file_name)
         _upload_data = {'task_id': self.task_id, 'sub_dir': self._sub_dir, 'filename': _file_name}
 
@@ -95,7 +95,7 @@ class Uploader(object):
                 if not part_bytes:
                     break
 
-                _upload_data['chunk'] = _chunk
+                _upload_data['chunkNumber'] = _chunk
 
                 _file_name = os.path.basename(self._file_name)
 

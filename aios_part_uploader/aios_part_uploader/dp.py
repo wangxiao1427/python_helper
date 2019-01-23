@@ -68,7 +68,7 @@ class Uploader(object):
         _data = {'done': self._done}
         
         with open(self._file_name, 'rb') as f:
-            _chunk = 0
+            _chunk = 1
 
             while True:
                 part_bytes = f.read(20 * 1024 * 1024)
@@ -76,7 +76,7 @@ class Uploader(object):
                     break
                 files = {'file': (self.task_id, BytesIO(part_bytes), 'application')}
                 _data['task_id'] = self.task_id
-                _data['chunk'] = _chunk
+                _data['chunkNumber'] = _chunk
 
                 _res = requests.post(self._upload_url, files=files, data=dict(_data, **self._data))
                 if not _res.ok:
