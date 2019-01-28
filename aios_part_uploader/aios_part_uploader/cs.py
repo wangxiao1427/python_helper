@@ -53,6 +53,10 @@ class Uploader(object):
         if not self._merge_url:
             raise Exception('merge_url is required!')
 
+        _jwt_token = args.get('jwt_token')
+        if _jwt_token:
+          self._headers = {'Authorization': _jwt_token}
+        
         self._file_name = file_name
         self._sub_dir = sub_dir
         self._done = False
@@ -101,8 +105,7 @@ class Uploader(object):
 
                 _files = {'file': (_file_name, BytesIO(part_bytes), 'application')}
                 
-
-                _res = requests.post(self._upload_url, files=_files, data=_upload_data)
+                _res = requests.post(self._upload_url, files=_files, data=_upload_data, headers=self._headers)
                 
                 if not _res.ok and _res.status_code == 200:
                     raise FileTransError('File transfer failed (1)! {}'.format(_res.text))
@@ -114,7 +117,7 @@ class Uploader(object):
     def _part_merge(self):
         _file_name = os.path.basename(self._file_name)
         _merge_data = {'sub_dir': self._sub_dir, 'task_id': self.task_id, 'filename': _file_name}
-        _res = requests.put(self._merge_url, data=_merge_data)
+        _res = requests.put(self._merge_url, data=_merge_data, headers=self._headers)
         if not _res.ok:
             raise FileTransError('File transfer failed (2)! {}'.format(_res.text))
         self.text = _res.text

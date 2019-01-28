@@ -35,7 +35,11 @@ class Uploader(object):
             raise Exception('upload_url is required')
         if not self._merge_url:
             raise Exception('merge_url is required')
-
+        
+        _jwt_token = args.get('jwt_token')
+        if _jwt_token:
+          self._headers = {'Authorization': _jwt_token}
+        
         self._file_name = file_name
         self._data = data
         self._done = False
@@ -78,7 +82,7 @@ class Uploader(object):
                 _data['task_id'] = self.task_id
                 _data['chunkNumber'] = _chunk
 
-                _res = requests.post(self._upload_url, files=files, data=dict(_data, **self._data))
+                _res = requests.post(self._upload_url, files=files, data=dict(_data, **self._data), headers=self._headers)
                 if not _res.ok:
                     raise Exception('Encountered an error in pushing a slice, {}'.format(_res.text))
                 _chunk += 1
@@ -88,7 +92,7 @@ class Uploader(object):
     # merge
     def _part_merge(self):
         self._data['task_id'] = self.task_id
-        _res = requests.put(self._merge_url, data=json.dumps(self._data))
+        _res = requests.put(self._merge_url, data=json.dumps(self._data), headers=self._headers)
         if not _res.ok:
             raise Exception('Encountered an error in merge all slices, {}'.format(_res.text))
         self.text = _res.text
