@@ -54,6 +54,8 @@ class Uploader(object):
             raise Exception('merge_url is required!')
 
         _jwt_token = args.get('jwt_token')
+        
+        self._headers = None
         if _jwt_token:
           self._headers = {'Authorization': _jwt_token}
         
